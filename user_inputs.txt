@@ -1,0 +1,7 @@
+name:TestName
+username:TestUserName
+#email:test@email.com
+#archiveAsScreenshot:True
+#archiveAsPDF:True
+#archiveAsWaybackMachine:False
+#isPrivate:False
