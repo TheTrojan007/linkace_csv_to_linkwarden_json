@@ -119,9 +119,9 @@ with open(linkaceFilename, newline='', encoding='utf8') as csvfile:
                               newCollections.append(Collection(name=listName))
                               lastCollectionId = len(lists)
 
+               newTags = []
                if (row[13] != ''):
                     tagsFromRow = row[13].split(',')
-                    newTags = []
                     for tag in tagsFromRow:
                          newTags.append(Tag(name=tag))
             
