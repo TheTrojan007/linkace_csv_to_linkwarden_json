@@ -23,6 +23,8 @@ def read_user_inputs(file_path):
 user_inputs_file_path = 'user_inputs.txt'
 user_inputs = read_user_inputs(user_inputs_file_path)
 
+print(f'Data from input file {user_inputs_file_path}:')
+
 nameInput = user_inputs.get('name', '')
 print(f'name is set to {nameInput}')
 usernameInput = user_inputs.get('username', '')
@@ -39,7 +41,7 @@ isPrivateInput = user_inputs.get('isprivate', False)
 print(f'isPrivate is set to {isPrivateInput}')
 
 date = datetime.now().astimezone(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
-print(f'date is set to {date}')
+print(f'date is set to {date} (current UTC time)\n')
 
 @dataclass
 class Tag:
@@ -95,8 +97,8 @@ linkaceFilename = 'LinkAce_export.csv'
 
 backupObject = BackupJsonObject(name=nameInput, username=usernameInput, email=emailInput, collections=[])
 
-lists: str = ['Unorganized']
-newCollections: list[Collection] = [Collection(name='Unorganized')]
+lists = ['Unorganized']
+newCollections = [Collection(name='Unorganized')]
 
 #row[0] - id, row[1] - user_id, row[2] - url, row[3] - title, row[4] - description, row[5] - icon, row[6] - thumbnail, row[7] - is_private, row[8] - status, row[9] - check_disabled, row[10] - created_at, row[11] - updated_at, row[12] - deleted_at, row[13] - tags, row[14] - lists
 with open(linkaceFilename, newline='', encoding='utf8') as csvfile:
@@ -106,7 +108,6 @@ with open(linkaceFilename, newline='', encoding='utf8') as csvfile:
 
      for row in csv_reader:
           if line_count == 0:
-               #print(f'Column names are {", ".join(row)}')
                line_count += 1
           else:
                lastCollectionId = 1
@@ -124,14 +125,8 @@ with open(linkaceFilename, newline='', encoding='utf8') as csvfile:
                     for tag in tagsFromRow:
                          newTags.append(Tag(name=tag))
             
-               link = Link(collectionId=lastCollectionId, description=row[4], name=row[3], tags=newTags, textContent=None, url=row[2])
+               link = Link(collectionId=lastCollectionId, description=row[4], name=row[3], tags=newTags, url=row[2])
 
-               tagsFromRow = row[13].split(',')
-               newTags = []
-               for tag in tagsFromRow:
-                    newTags.append(Tag(name=tag))
-
-               link = Link(collectionId=lastCollectionId, description=row[4], name=row[3], tags=newTags, type='url', url=row[2])
                newCollections[lastCollectionId - 1].links.append(link)
 
                line_count += 1
@@ -140,14 +135,10 @@ with open(linkaceFilename, newline='', encoding='utf8') as csvfile:
 
 backupObject.collections = newCollections
 
-#jsonString = json.dumps(backupObject, default=lambda o: o.__dict__, indent=4)
-#print(f'JSON string: {jsonString}')
-
 filename = 'backup.json'
 
 with open(filename, 'w', encoding='utf-8') as json_file:
-    json.dump(backupObject, json_file, default=lambda o: o.__dict__, indent=4)#Also works here
-    #json_file.write(jsonString)
+    json.dump(backupObject, json_file, default=lambda o: o.__dict__, indent=4)
 
 print(f'Backup exported to {filename}')
 
